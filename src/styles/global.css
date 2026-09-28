@@ -12,8 +12,8 @@
   --muted: #6b6960;
   --line: #e4e2db;
   --panel: #f1f0ec;
-  --teal: #0f6e56;
-  --amber: #b45309;
+  --teal: #087f5b;
+  --amber: #b54708;
 }
 [data-theme="dark"] {
   --paper: #141413;
@@ -21,8 +21,8 @@
   --muted: #9c9a91;
   --line: #2c2c29;
   --panel: #1c1b19;
-  --teal: #3fbe95;
-  --amber: #b45309;
+  --teal: #34d399;
+  --amber: #fbbf24;
 }
 
 @theme inline {
@@ -35,16 +35,36 @@
   --color-line: var(--line);
   --color-panel: var(--panel);
   --color-teal: var(--teal);
+  --color-amber: var(--amber);
+  --color-teal-text: var(--teal-text);
+  --color-amber-text: var(--amber-text);
 
-  --animate-marquee: marquee 24s linear infinite;
+  --animate-marquee: marquee 35s linear infinite;
   @keyframes marquee {
     from {
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
     }
     to {
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
     }
   }
+}
+
+@utility marquee-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 20%,
+    #000 80%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 20%,
+    #000 80%,
+    transparent
+  );
 }
 
 @layer base {

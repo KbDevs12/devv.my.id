@@ -13,6 +13,7 @@
   --line: #e4e2db;
   --panel: #f1f0ec;
   --teal: #0f6e56;
+  --amber: #b45309;
 }
 [data-theme="dark"] {
   --paper: #141413;
@@ -21,6 +22,7 @@
   --line: #2c2c29;
   --panel: #1c1b19;
   --teal: #3fbe95;
+  --amber: #b45309;
 }
 
 @theme inline {

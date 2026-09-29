@@ -1,11 +1,229 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { Icon } from "astro-icon/components";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
+import Sidebar from "../components/Sidebar.astro";
+import Badge from "../components/Badge.astro";
+import JsonResponse from "../components/JsonResponse.astro";
+
+const iconMap: Record<string, string> = {
+  Laravel: "logos:laravel",
+  PHP: "logos:php",
+  MySQL: "logos:mysql",
+  "Inertia.js": "simple-icons:inertia",
+  React: "logos:react",
+  "Tailwind CSS": "logos:tailwindcss-icon",
+  Redis: "logos:redis",
+  "React Native": "logos:react",
+  Expo: "simple-icons:expo",
+  TypeScript: "logos:typescript-icon",
+  "REST API": "carbon:api",
+  "Firebase Cloud Messaging (FCM)": "logos:firebase",
+};
+
+interface ExperinceProp {
+  id: string;
+  company_name: string;
+  job_title: string;
+  start_date: string;
+  end_date: string | null;
+  is_current: boolean | null;
+  description: string | null;
+  created_at: string | null;
+}
+
+const [profileRes, techStackRes, experienceRes] = await Promise.all([
+  fetch("https://portofolio-cms-tau.vercel.app/api/profile"),
+  fetch("https://portofolio-cms-tau.vercel.app/api/tech_stack"),
+  fetch("https://portofolio-cms-tau.vercel.app/api/experience"),
+]);
+
+const profile = await profileRes.json();
+const techStack = await techStackRes.json();
+const experiences = await experienceRes.json();
+const profileData = profile.data;
+const stackData = techStack.data;
+const experienceData: ExperinceProp[] = experiences.data;
+
+const stacks = stackData.uniqueTechStack;
+
+const response = {
+  name: "Aditya Putra",
+  role: "Software Engineer",
+  location: "Indonesia",
+};
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Aditya Putra">
+  <Sidebar />
+
+  <main class="md:ml-72 min-h-screen flex flex-col">
+    <section id="overview" class="mx-auto px-6 py-10">
+      <div class="max-w-4xl flex-col gap-4 sm:gap-5 md:gap-6">
+        <h1
+          class="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl sm:leading-[1.05] md:text-5xl lg:text-6xl"
+        >
+          {profileData.headline}
+        </h1>
+      </div>
+
+      <div aria-label="contact-icon" class="flex mt-20 gap-4">
+        <a
+          href={`mailto:${profileData.email}`}
+          class="inline-flex items-center gap-2 rounded border border-line px-3 py-1.5 font-mono text-xs hover:border-ink"
+        >
+          <Icon name="lucide:mail" class="size-4" />
+          email
+        </a>
+        <a
+          href={profileData.github_url}
+          class="inline-flex items-center gap-2 rounded border border-line px-3 py-1.5 font-mono text-xs hover:border-ink"
+        >
+          <Icon name="simple-icons:github" class="size-4" />
+          Github
+        </a>
+      </div>
+    </section>
+
+    <div
+      class="marquee-fade mx-auto w-full overflow-hidden border-y border-line bg-panel py-3 md:w-3xl"
+    >
+      <div
+        class="flex w-max animate-marquee font-mono text-sm text-muted will-change-transform motion-reduce:animate-none"
+      >
+        {
+          [0, 1].map((i) => (
+            <ul
+              aria-hidden={i === 1 ? "true" : undefined}
+              class="flex shrink-0 items-center gap-10 pr-10"
+            >
+              {[...stacks, ...stacks].map((item) => (
+                <li class="flex shrink-0 items-center gap-2">
+                  <Icon
+                    name={iconMap[item] ?? "lucide:code-2"}
+                    class="size-4"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
+    </div>
+
+    <section class="mx-auto w-full max-w-4xl px-6 py-16">
+      <div class="flex flex-col gap-5">
+        <p class="mb-2 font-mono text-sm text-muted">/ profile</p>
+
+        <div class="overflow-hidden rounded-lg border border-line bg-panel">
+          <div class="flex items-center gap-2 border-b border-line px-4 py-3">
+            <span class="size-2.5 rounded-full bg-red-400"></span>
+            <span class="size-2.5 rounded-full bg-yellow-400"></span>
+            <span class="size-2.5 rounded-full bg-green-500"></span>
+
+            <span class="ml-2 font-mono text-xs text-muted">
+              aditya@portfolio:~
+            </span>
+          </div>
+
+          <div
+            class="space-y-5 p-5 font-mono text-xs leading-7 sm:p-6 sm:text-sm"
+          >
+            <div>
+              <p class="text-muted">
+                <span class="text-teal">$</span> whoami
+              </p>
+
+              <p class="mt-1 text-ink">
+                {profileData.full_name}
+              </p>
+
+              <p class="text-muted">
+                {profileData.headline}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-muted">
+                <span class="text-teal">$</span> cat bio.txt
+              </p>
+
+              <p class="mt-1 max-w-3xl text-muted">
+                {profileData.bio}
+              </p>
+            </div>
+
+            <div class="text-muted">
+              <span class="text-teal">$</span>
+              <span class="ml-1 animate-pulse">_</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="border-line border w-full"></div>
+    <section
+      id="experience"
+      class="my-24 flex w-full max-w-4xl flex-col px-6 md:my-32 md:ml-64 md:px-0"
+    >
+      <p class="mb-8 font-mono text-sm text-muted md:mb-10">/ experience</p>
+
+      <div class="space-y-6">
+        {
+          experienceData &&
+            experienceData.map((exp, index) => (
+              <div
+                id={`${index}`}
+                class:list={[
+                  "border-l-2 py-2 pl-4 md:pl-6",
+                  {
+                    "border-teal": exp.is_current,
+                    "border-line": !exp.is_current,
+                  },
+                ]}
+              >
+                <p class="font-mono text-xs text-muted">
+                  {exp.start_date} -{" "}
+                  {exp.is_current ? "Sekarang" : exp.end_date}
+                </p>
+
+                <p class="mt-1 font-medium text-xl">
+                  {exp.job_title}, {exp.company_name}
+                </p>
+
+                <p class="mt-1 max-w-lg text-sm leading-relaxed tracking-wide text-muted">
+                  {exp.description}
+                </p>
+              </div>
+            ))
+        }
+      </div>
+    </section>
+
+    <div class="border-line border w-full"></div>
+
+    <section
+      id="projects"
+      class="my-24 flex w-full max-w-4xl flex-col px-6 md:my-32 md:ml-64 md:px-0"
+    >
+      <p class="mb-2 font-mono text-sm text-muted">/ profile</p>
+
+      <div class="border-2 border-line p-4">
+        <code
+          class="flex items-center gap-2 font-mono text-sm font-medium text-teal"
+        >
+          <Badge status="GET" />/test
+        </code>
+        <p class="text-muted text-sm py-4">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse
+          exercitationem molestiae, dolorum, dolore deserunt iusto fuga odio a
+          maiores consequuntur quos, eius maxime optio officiis voluptas odit
+          perspiciatis reiciendis sint.
+        </p>
+        <JsonResponse data={response} status={200} />
+      </div>
+    </section>
+  </main>
 </Layout>

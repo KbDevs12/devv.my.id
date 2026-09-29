@@ -5,53 +5,44 @@ import Layout from "../layouts/Layout.astro";
 import Sidebar from "../components/Sidebar.astro";
 import Badge from "../components/Badge.astro";
 import JsonResponse from "../components/JsonResponse.astro";
+import { reorderObject } from "../utils/re-arrage";
 
-const iconMap: Record<string, string> = {
-  Laravel: "logos:laravel",
-  PHP: "logos:php",
-  MySQL: "logos:mysql",
-  "Inertia.js": "simple-icons:inertia",
-  React: "logos:react",
-  "Tailwind CSS": "logos:tailwindcss-icon",
-  Redis: "logos:redis",
-  "React Native": "logos:react",
-  Expo: "simple-icons:expo",
-  TypeScript: "logos:typescript-icon",
-  "REST API": "carbon:api",
-  "Firebase Cloud Messaging (FCM)": "logos:firebase",
-};
+import {
+  iconMap,
+  type ExperienceProp,
+  type ProjectProp,
+} from "../types/global";
 
-interface ExperinceProp {
-  id: string;
-  company_name: string;
-  job_title: string;
-  start_date: string;
-  end_date: string | null;
-  is_current: boolean | null;
-  description: string | null;
-  created_at: string | null;
-}
-
-const [profileRes, techStackRes, experienceRes] = await Promise.all([
-  fetch("https://portofolio-cms-tau.vercel.app/api/profile"),
-  fetch("https://portofolio-cms-tau.vercel.app/api/tech_stack"),
-  fetch("https://portofolio-cms-tau.vercel.app/api/experience"),
-]);
+const [profileRes, techStackRes, experienceRes, ProjectRes] = await Promise.all(
+  [
+    fetch("https://portofolio-cms-tau.vercel.app/api/profile"),
+    fetch("https://portofolio-cms-tau.vercel.app/api/tech_stack"),
+    fetch("https://portofolio-cms-tau.vercel.app/api/experience"),
+    fetch("https://portofolio-cms-tau.vercel.app/api/projects"),
+  ],
+);
 
 const profile = await profileRes.json();
 const techStack = await techStackRes.json();
 const experiences = await experienceRes.json();
+const projects = await ProjectRes.json();
 const profileData = profile.data;
 const stackData = techStack.data;
-const experienceData: ExperinceProp[] = experiences.data;
+const experienceData: ExperienceProp[] = experiences.data;
+const projectsData: ProjectProp[] = projects.data;
 
 const stacks = stackData.uniqueTechStack;
 
-const response = {
-  name: "Aditya Putra",
-  role: "Software Engineer",
-  location: "Indonesia",
-};
+const formattedAspect = projectsData.flatMap((project) =>
+  project.project_aspects.map((aspect) =>
+    reorderObject(aspect, [
+      "aspect_title",
+      "description",
+      "tech_stack",
+      "repo_url",
+    ]),
+  ),
+);
 ---
 
 <Layout title="Aditya Putra">
@@ -206,24 +197,25 @@ const response = {
 
     <section
       id="projects"
-      class="my-24 flex w-full max-w-4xl flex-col px-6 md:my-32 md:ml-64 md:px-0"
+      class="my-16 flex w-full gap-4 max-w-4xl flex-col px-4 md:my-32 md:ml-64 md:px-0"
     >
-      <p class="mb-2 font-mono text-sm text-muted">/ profile</p>
-
-      <div class="border-2 border-line p-4">
-        <code
-          class="flex items-center gap-2 font-mono text-sm font-medium text-teal"
-        >
-          <Badge status="GET" />/test
-        </code>
-        <p class="text-muted text-sm py-4">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse
-          exercitationem molestiae, dolorum, dolore deserunt iusto fuga odio a
-          maiores consequuntur quos, eius maxime optio officiis voluptas odit
-          perspiciatis reiciendis sint.
-        </p>
-        <JsonResponse data={response} status={200} />
-      </div>
+      <p class="mb-3 font-mono text-sm text-muted">/ projects</p>
+      {
+        projectsData.map((p, index) => (
+          <div
+            id={`${index}`}
+            class="sm:rounded-lg sm:border sm:border-line sm:p-5"
+          >
+            <code class="flex items-center gap-2 font-mono text-sm font-medium text-teal">
+              <Badge status="GET" />/{p.slug}
+            </code>
+            <p class="py-3 text-sm leading-relaxed text-muted px-2 sm:py-4">
+              {p.summary}
+            </p>
+            <JsonResponse data={formattedAspect} status={200} />
+          </div>
+        ))
+      }
     </section>
   </main>
 </Layout>

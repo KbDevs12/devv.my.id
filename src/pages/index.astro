@@ -236,9 +236,11 @@ const projectsView = projectsData.map((project) => ({
                   <code class="flex items-center gap-2 font-mono text-sm font-medium text-teal">
                     <Badge status="GET" />/{p.slug}
                   </code>
+
                   <p class="px-2 py-3 text-sm leading-relaxed text-muted sm:py-4">
                     {p.summary}
                   </p>
+
                   <JsonResponse
                     data={p.aspects}
                     status={200}
@@ -247,6 +249,22 @@ const projectsView = projectsData.map((project) => ({
                 </article>
               ))
             }
+
+            <article
+              data-reveal
+              data-hscroll-panel
+              class="flex flex-col justify-center sm:rounded-lg sm:border sm:border-line sm:p-5 hscroll:w-[clamp(28rem,50vw,42rem)] hscroll:shrink-0"
+            >
+              <div class="text-center">
+                <p class="font-mono text-2xl font-semibold text-ink">
+                  Coming Soon
+                </p>
+
+                <p class="mt-2 text-sm text-muted">
+                  Something new is being built.
+                </p>
+              </div>
+            </article>
           </div>
         </div>
       </div>

@@ -4,9 +4,15 @@ interface Props {
   data: ProjectsAspect[];
   status?: number;
   contentType?: string;
+  bodyClass?: string;
 }
 
-const { data, status = 200, contentType = "application/json" } = Astro.props;
+const {
+  data,
+  status = 200,
+  contentType = "application/json",
+  bodyClass = "",
+} = Astro.props;
 
 const json = JSON.stringify(data, null, 2);
 const lines = json.split("\n").map((line) => {
@@ -74,7 +80,13 @@ function highlightJson(value: string): string {
     </span>
   </div>
 
-  <div class="max-h-128 overflow-y-auto py-3 font-mono text-sm leading-6">
+  <div
+    data-lenis-prevent
+    class:list={[
+      "max-h-128 overflow-y-auto py-3 font-mono text-sm leading-6",
+      bodyClass,
+    ]}
+  >
     {
       lines.map(({ level, content }, index) => (
         <div class="flex px-4 hover:bg-line/30">

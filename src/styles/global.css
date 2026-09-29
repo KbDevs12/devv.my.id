@@ -5,6 +5,7 @@
 @import "@fontsource/ibm-plex-mono/400.css";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant hscroll (&:where(.js-hscroll *));
 
 :root {
   --paper: #fafaf8;
@@ -90,4 +91,15 @@
   *::-webkit-scrollbar-thumb:hover {
     background-color: var(--muted);
   }
+}
+
+.js-motion :is([data-reveal], [data-reveal-stagger] > *):not([data-revealed]) {
+  opacity: 0;
+}
+
+.js-hscroll [data-hscroll] :is([data-reveal], [data-reveal-stagger] > *) {
+  opacity: 1;
+}
+[tabindex="-1"]:focus {
+  outline: none;
 }

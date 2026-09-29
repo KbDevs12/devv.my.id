@@ -1,6 +1,7 @@
 ---
+import type { ProjectsAspect } from "../types/global";
 interface Props {
-  data: Record<string, unknown>;
+  data: ProjectsAspect[];
   status?: number;
   contentType?: string;
 }
@@ -8,7 +9,11 @@ interface Props {
 const { data, status = 200, contentType = "application/json" } = Astro.props;
 
 const json = JSON.stringify(data, null, 2);
-const lines: string[] = json.split("\n");
+const lines = json.split("\n").map((line) => {
+  const content = line.trimStart();
+  const level = (line.length - content.length) / 2;
+  return { level, content };
+});
 
 function escapeHtml(value: string): string {
   return value
@@ -33,7 +38,7 @@ function highlightJson(value: string): string {
       }
 
       if (stringValue) {
-        return `<span class="text-amber-400">${stringValue}</span>`;
+        return `<span class="text-amber">${stringValue}</span>`;
       }
 
       if (booleanValue) {
@@ -71,14 +76,15 @@ function highlightJson(value: string): string {
 
   <div class="max-h-128 overflow-y-auto py-3 font-mono text-sm leading-6">
     {
-      lines.map((line, index) => (
+      lines.map(({ level, content }, index) => (
         <div class="flex px-4 hover:bg-line/30">
-          <span class="w-8 shrink-0 select-none pr-4 text-right text-xs text-muted/40">
+          <span class="w-8 shrink-0 select-none pr-4 text-right text-xs leading-6 text-muted/40">
             {index + 1}
           </span>
           <code
             class="min-w-0 flex-1 whitespace-pre-wrap wrap-break-words"
-            set:html={highlightJson(line)}
+            style={`padding-left: calc(${level} * 1.25rem + 1rem); text-indent: -1rem`}
+            set:html={highlightJson(content)}
           />
         </div>
       ))

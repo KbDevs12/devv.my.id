@@ -217,5 +217,174 @@ const formattedAspect = projectsData.flatMap((project) =>
         ))
       }
     </section>
+
+    <div class="border-line border w-full"></div>
+
+    <section id="contact" class="px-6 py-12 md:px-12 md:py-16">
+      <p class="mb-6 font-mono text-xs text-muted">/contact</p>
+
+      <div class="overflow-hidden rounded-lg border border-line">
+        <div
+          class="flex items-center gap-2 border-b border-line bg-panel px-5 py-3"
+        >
+          <Badge status="POST" />
+          <code class="font-mono text-sm">/contact</code>
+        </div>
+
+        <div class="grid md:grid-cols-2">
+          <form
+            data-contact-form
+            class="flex flex-col gap-4 border-b border-line p-5 md:border-b-0 md:border-r"
+          >
+            <p class="font-mono text-xs text-muted">Request body</p>
+
+            <label class="flex flex-col gap-1.5">
+              <span class="font-mono text-xs text-muted">
+                name <span class="text-teal">string</span>
+              </span>
+              <input
+                name="name"
+                type="text"
+                required
+                placeholder="Your name"
+                class="rounded border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-teal"
+              />
+            </label>
+
+            <label class="flex flex-col gap-1.5">
+              <span class="font-mono text-xs text-muted">
+                email <span class="text-teal">string</span>
+              </span>
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="your@email.com"
+                class="rounded border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-teal"
+              />
+            </label>
+
+            <label class="flex flex-col gap-1.5">
+              <span class="font-mono text-xs text-muted">
+                message <span class="text-teal">string</span>
+              </span>
+              <textarea
+                name="message"
+                required
+                rows="3"
+                placeholder="There is a suitable project or position?"
+                class="resize-none rounded border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-teal"
+              ></textarea>
+            </label>
+
+            <button
+              type="submit"
+              data-submit-btn
+              class="mt-1 inline-flex items-center justify-center gap-2 rounded bg-teal px-4 py-2 font-mono text-xs font-medium text-paper transition-opacity disabled:opacity-60"
+            >
+              Send request
+            </button>
+          </form>
+
+          <div class="flex flex-col p-5">
+            <p class="mb-2 font-mono text-xs text-muted">Body</p>
+            <pre
+              data-body-preview
+              class="rounded bg-panel p-4 font-mono text-xs leading-relaxed text-muted">{`{\n  "name": "",\n  "email": "",\n  "message": ""\n}`}</pre>
+
+            <div class="mt-5 flex items-center gap-2">
+              <p class="font-mono text-xs text-muted">Response</p>
+              <span
+                data-status-badge
+                class="hidden rounded px-2 py-0.5 font-mono text-teal text-[10px] font-medium"
+              ></span>
+            </div>
+            <pre
+              data-response-preview
+              class="mt-2 min-h-24 rounded bg-panel p-4 font-mono text-xs leading-relaxed text-muted">// response will appear here after the request is sent.</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function setup() {
+        const form = document.querySelector<HTMLFormElement>(
+          "[data-contact-form]",
+        );
+        if (!form || form.dataset.bound) return;
+        form.dataset.bound = "true";
+
+        const bodyPreview = document.querySelector<HTMLPreElement>(
+          "[data-body-preview]",
+        );
+        const responsePreview = document.querySelector<HTMLPreElement>(
+          "[data-response-preview]",
+        );
+        const statusBadge = document.querySelector<HTMLSpanElement>(
+          "[data-status-badge]",
+        );
+        const submitBtn =
+          form.querySelector<HTMLButtonElement>("[data-submit-btn]");
+
+        const fields = ["name", "email", "message"] as const;
+
+        function getField(name: (typeof fields)[number]) {
+          return form!.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+            `[name="${name}"]`,
+          );
+        }
+
+        function updatePreview() {
+          const data = Object.fromEntries(
+            fields.map((f) => [f, getField(f)?.value ?? ""]),
+          );
+          if (bodyPreview)
+            bodyPreview.textContent = JSON.stringify(data, null, 2);
+        }
+
+        fields.forEach((f) => {
+          getField(f)?.addEventListener("input", updatePreview);
+        });
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!submitBtn) return;
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Sending...";
+          statusBadge?.classList.add("hidden");
+
+          await new Promise((r) => setTimeout(r, 900));
+
+          const name = getField("name")?.value ?? "";
+
+          if (responsePreview) {
+            responsePreview.textContent = JSON.stringify(
+              {
+                status: "received",
+                message: `Thanks, ${name || "there"}! I'll get back to you soon.`,
+              },
+              null,
+              2,
+            );
+          }
+
+          if (statusBadge) {
+            statusBadge.textContent = "200 OK";
+            statusBadge.classList.remove("hidden");
+            statusBadge.classList.add("bg-teal-tag");
+          }
+
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send request";
+          form.reset();
+          updatePreview();
+        });
+      }
+
+      setup();
+      document.addEventListener("astro:after-swap", setup);
+    </script>
   </main>
 </Layout>

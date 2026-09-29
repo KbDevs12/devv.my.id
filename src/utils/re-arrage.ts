@@ -1,20 +1,13 @@
-function reorderObject<T extends Record<string, unknown>>(
-  obj: T,
-  order: string[],
-): T {
-  const result: Record<string, unknown> = {};
+export function reorderObject<T extends Object>(obj: T, order: string[]): T {
+  const entries = Object.entries(obj);
 
-  for (const key of order) {
-    if (key in obj) {
-      result[key] = obj[key];
-    }
-  }
+  const orderedEntries = [
+    ...order
+      .filter((key) => key in obj)
+      .map((key) => [key, obj[key as keyof T]] as const),
 
-  for (const key of Object.keys(obj)) {
-    if (!(key in result)) {
-      result[key] = obj[key];
-    }
-  }
+    ...entries.filter(([key]) => !order.includes(key)),
+  ];
 
-  return result as T;
+  return Object.fromEntries(orderedEntries) as T;
 }

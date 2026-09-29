@@ -36,8 +36,6 @@
   --color-panel: var(--panel);
   --color-teal: var(--teal);
   --color-amber: var(--amber);
-  --color-teal-text: var(--teal-text);
-  --color-amber-text: var(--amber-text);
 
   --animate-marquee: marquee 35s linear infinite;
   @keyframes marquee {

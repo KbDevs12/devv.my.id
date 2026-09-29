@@ -1,0 +1,87 @@
+---
+interface Props {
+  data: Record<string, unknown>;
+  status?: number;
+  contentType?: string;
+}
+
+const { data, status = 200, contentType = "application/json" } = Astro.props;
+
+const json = JSON.stringify(data, null, 2);
+const lines: string[] = json.split("\n");
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function highlightJson(value: string): string {
+  const escaped = escapeHtml(value);
+
+  return escaped.replace(
+    /("(?:\\.|[^"\\])*")(?=\s*:)|("(?:\\.|[^"\\])*")|\b(true|false)\b|\bnull\b|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g,
+    (
+      match: string,
+      key: string | undefined,
+      stringValue: string | undefined,
+      booleanValue: string | undefined,
+    ): string => {
+      if (key) {
+        return `<span class="text-teal">${key}</span>`;
+      }
+
+      if (stringValue) {
+        return `<span class="text-amber-400">${stringValue}</span>`;
+      }
+
+      if (booleanValue) {
+        return `<span class="text-purple-400">${booleanValue}</span>`;
+      }
+
+      if (match === "null") {
+        return `<span class="text-muted">${match}</span>`;
+      }
+
+      return `<span class="text-sky-400">${match}</span>`;
+    },
+  );
+}
+---
+
+<div class="border border-line bg-panel">
+  <div
+    class="flex items-center justify-between border-b border-line px-4 py-2.5"
+  >
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-xs text-muted"> Response </span>
+
+      <span
+        class="rounded bg-teal/10 px-2 py-0.5 font-mono text-xs font-medium text-teal"
+      >
+        {status}
+      </span>
+    </div>
+
+    <span class="font-mono text-xs text-muted">
+      {contentType}
+    </span>
+  </div>
+
+  <div class="max-h-128 overflow-y-auto py-3 font-mono text-sm leading-6">
+    {
+      lines.map((line, index) => (
+        <div class="flex px-4 hover:bg-line/30">
+          <span class="w-8 shrink-0 select-none pr-4 text-right text-xs text-muted/40">
+            {index + 1}
+          </span>
+          <code
+            class="min-w-0 flex-1 whitespace-pre-wrap wrap-break-words"
+            set:html={highlightJson(line)}
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>

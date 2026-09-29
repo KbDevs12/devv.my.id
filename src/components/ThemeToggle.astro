@@ -1,0 +1,60 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  size?: "sm" | "md";
+}
+
+const { size = "md" } = Astro.props;
+const sizes = {
+  sm: { btn: "size-7", icon: "size-3.5" },
+  md: { btn: "size-12", icon: "size-4" },
+};
+
+const s = sizes[size];
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  aria-label="Ganti tema"
+  class:list={[
+    "grid place-items-center shrink-0 rounded-full border border-line text-ink bg-paper",
+    "hover:border-ink transition-colors cursor-pointer",
+    s.btn,
+  ]}
+>
+  <Icon
+    name="lucide:sun"
+    class:list={["dark:hidden", s.icon]}
+    aria-hidden="true"
+  />
+  <Icon
+    name="lucide:moon"
+    class:list={["hidden dark:block", s.icon]}
+    aria-hidden="true"
+  />
+</button>
+
+<script>
+  function setup() {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-theme-toggle]")
+      .forEach((btn) => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = "true";
+
+        btn.addEventListener("click", () => {
+          const root = document.documentElement;
+          const next = root.dataset.theme === "dark" ? "light" : "dark";
+          root.dataset.theme = next;
+          try {
+            localStorage.setItem("theme", next);
+          } catch {}
+        });
+      });
+  }
+
+  setup();
+  document.addEventListener("astro:after-swap", setup);
+</script>

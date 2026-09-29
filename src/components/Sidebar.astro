@@ -1,0 +1,156 @@
+---
+import { Icon } from "astro-icon/components";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const sections = [
+  {
+    title: "Getting Started",
+    items: [
+      {
+        href: "#overview",
+        label: "Overview",
+        icon: "lucide:house",
+      },
+    ],
+  },
+  {
+    title: "Experience",
+    items: [
+      {
+        href: "#experience",
+        label: "Work Experience",
+        icon: "lucide:briefcase",
+      },
+    ],
+  },
+  {
+    title: "Projects",
+    items: [
+      {
+        href: "#projects",
+        label: "Projects",
+        icon: "lucide:folder-code",
+      },
+    ],
+  },
+  {
+    title: "Connect",
+    items: [
+      {
+        href: "#contact",
+        label: "Contact",
+        icon: "lucide:mail",
+      },
+    ],
+  },
+];
+---
+
+<aside
+  class="fixed inset-y-0 left-0 hidden w-72 flex-col border-r border-line bg-panel md:flex"
+>
+  <div class="border-b border-line px-6 py-5">
+    <div class="flex items-center justify-between">
+      <a
+        href="#overview"
+        class="font-mono text-sm font-semibold tracking-tight"
+      >
+        Kbdev<span class="text-teal">.</span>
+      </a>
+
+      <ThemeToggle size="sm" />
+    </div>
+
+    <p class="mt-1 font-mono text-[11px] text-muted">/ portfolio</p>
+  </div>
+
+  <nav class="flex-1 overflow-y-auto px-4 py-6">
+    {
+      sections.map((section) => (
+        <div class="mb-7 last:mb-0">
+          <h2 class="mb-2 px-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted">
+            {section.title}
+          </h2>
+
+          <div class="flex flex-col gap-0.5">
+            {section.items.map((item) => (
+              <a
+                href={item.href}
+                data-nav-link
+                data-target={item.href.slice(1)}
+                class="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted transition-colors hover:bg-paper hover:text-ink data-active:bg-paper data-active:font-medium data-active:text-teal"
+              >
+                <Icon name={item.icon} class="size-4 shrink-0" />
+
+                <span>{item.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </nav>
+
+  <div class="border-t border-line px-6 py-4">
+    <div class="flex items-center justify-between">
+      <span class="font-mono text-sm text-muted"> v1.0.0 </span>
+
+      <span class="font-mono text-sm text-muted"> 2026 </span>
+    </div>
+  </div>
+</aside>
+
+<details
+  class="mobile-nav group sticky top-0 z-50 border-b border-line bg-paper md:hidden"
+>
+  <summary
+    class="flex h-14 cursor-pointer list-none items-center justify-between px-5"
+  >
+    <span class="font-mono text-sm font-semibold">
+      Kbdev<span class="text-teal">.</span>
+    </span>
+
+    <div class="flex items-center gap-3">
+      <ThemeToggle size="sm" />
+
+      <Icon
+        name="lucide:menu"
+        class="size-5 transition-transform duration-200 group-open:hidden"
+      />
+
+      <Icon
+        name="lucide:x"
+        class="hidden size-5 transition-transform duration-200 group-open:block"
+      />
+    </div>
+  </summary>
+
+  <div
+    class="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-300 ease-out group-open:grid-rows-[1fr] group-open:opacity-100"
+  >
+    <nav
+      class="min-h-0 overflow-hidden border-t border-line bg-panel px-5 py-5"
+    >
+      {
+        sections.map((section) => (
+          <div class="mb-6 last:mb-0">
+            <h2 class="mb-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted">
+              {section.title}
+            </h2>
+
+            <div class="flex flex-col gap-1">
+              {section.items.map((item) => (
+                <a
+                  href={item.href}
+                  class="rounded-md px-3 py-2.5 text-sm text-muted transition-colors hover:bg-paper hover:text-ink"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </nav>
+  </div>
+</details>

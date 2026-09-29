@@ -1,0 +1,23 @@
+---
+interface Props {
+  status: "GET" | "POST";
+}
+
+const { status } = Astro.props;
+
+const statusStyle = {
+  GET: "bg-teal/10 text-teal border border-teal/20",
+  POST: "bg-amber/10 text-amber border border-amber/20",
+};
+---
+
+<span
+  class:list={[
+    "inline-flex min-w-12 items-center justify-center",
+    "rounded-md px-2 py-1",
+    "font-mono text-[11px] font-medium tracking-wide",
+    statusStyle[status],
+  ]}
+>
+  {status}
+</span>

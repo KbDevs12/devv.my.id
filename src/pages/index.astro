@@ -224,7 +224,7 @@ const projectsView = projectsData.map((project) => ({
         <div data-hscroll-viewport class="hscroll:overflow-x-clip">
           <div
             data-hscroll-track
-            class="flex flex-col gap-4 hscroll:w-max hscroll:flex-row hscroll:gap-6 hscroll:px-12"
+            class="flex flex-col gap-6 hscroll:w-max hscroll:flex-row hscroll:gap-6 hscroll:px-12"
           >
             {
               projectsView.map((p) => (
@@ -272,12 +272,12 @@ const projectsView = projectsData.map((project) => ({
 
     <div class="border-line border w-full"></div>
 
-    <section id="contact" class="px-6 py-12 md:px-12 md:py-16">
+    <section id="contact" class="px-4 py-10 md:px-12 md:py-16">
       <p data-reveal class="mb-6 font-mono text-sm text-muted">/ contact</p>
 
       <div data-reveal class="overflow-hidden rounded-lg border border-line">
         <div
-          class="flex items-center gap-2 border-b border-line bg-panel px-5 py-3"
+          class="flex items-center gap-2 border-b border-line bg-panel px-4 py-3 md:px-5"
         >
           <Badge status="POST" />
           <code class="font-mono text-sm">/contact</code>
@@ -286,7 +286,7 @@ const projectsView = projectsData.map((project) => ({
         <div class="grid md:grid-cols-2">
           <form
             data-contact-form
-            class="flex flex-col gap-4 border-b border-line p-5 md:border-b-0 md:border-r"
+            class="flex flex-col gap-4 border-b border-line p-4 md:border-b-0 md:border-r md:p-5"
           >
             <p class="font-mono text-xs text-muted">Request body</p>
 
@@ -294,12 +294,13 @@ const projectsView = projectsData.map((project) => ({
               <span class="font-mono text-xs text-muted">
                 name <span class="text-teal">string</span>
               </span>
+
               <input
                 name="name"
                 type="text"
                 required
                 placeholder="Your name"
-                class="rounded border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-teal"
+                class="w-full rounded border border-line bg-transparent px-3 py-2.5 text-sm outline-none transition-colors focus:border-teal"
               />
             </label>
 
@@ -307,12 +308,13 @@ const projectsView = projectsData.map((project) => ({
               <span class="font-mono text-xs text-muted">
                 email <span class="text-teal">string</span>
               </span>
+
               <input
                 name="email"
                 type="email"
                 required
                 placeholder="your@email.com"
-                class="rounded border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-teal"
+                class="w-full rounded border border-line bg-transparent px-3 py-2.5 text-sm outline-none transition-colors focus:border-teal"
               />
             </label>
 
@@ -320,40 +322,44 @@ const projectsView = projectsData.map((project) => ({
               <span class="font-mono text-xs text-muted">
                 message <span class="text-teal">string</span>
               </span>
+
               <textarea
                 name="message"
                 required
-                rows="3"
+                rows="4"
                 placeholder="There is a suitable project or position?"
-                class="resize-none rounded border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-teal"
+                class="w-full resize-none rounded border border-line bg-transparent px-3 py-2.5 text-sm outline-none transition-colors focus:border-teal"
               ></textarea>
             </label>
 
             <button
               type="submit"
               data-submit-btn
-              class="mt-1 inline-flex items-center justify-center gap-2 rounded bg-teal px-4 py-2 font-mono text-xs font-medium text-paper transition-opacity disabled:opacity-60"
+              class="mt-1 inline-flex w-full items-center justify-center gap-2 rounded bg-teal px-4 py-2.5 font-mono text-xs font-medium text-paper transition-opacity disabled:opacity-60 md:w-fit"
             >
               Send request
             </button>
           </form>
 
-          <div class="flex flex-col p-5">
+          <div class="flex flex-col p-4 md:p-5">
             <p class="mb-2 font-mono text-xs text-muted">Body</p>
+
             <pre
               data-body-preview
-              class="rounded bg-panel p-4 font-mono text-xs leading-relaxed text-muted">{`{\n  "name": "",\n  "email": "",\n  "message": ""\n}`}</pre>
+              class="overflow-x-auto rounded bg-panel p-4 font-mono text-xs leading-relaxed text-muted">{`{\n  "name": "",\n  "email": "",\n  "message": ""\n}`}</pre>
 
             <div class="mt-5 flex items-center gap-2">
               <p class="font-mono text-xs text-muted">Response</p>
+
               <span
                 data-status-badge
-                class="hidden rounded px-2 py-0.5 font-mono text-teal text-[10px] font-medium"
+                class="hidden rounded px-2 py-0.5 font-mono text-[10px] font-medium text-teal"
               ></span>
             </div>
+
             <pre
               data-response-preview
-              class="mt-2 min-h-24 rounded bg-panel p-4 font-mono text-xs leading-relaxed text-muted">// response will appear here after the request is sent.</pre>
+              class="mt-2 min-h-24 overflow-x-auto rounded bg-panel p-4 font-mono text-xs leading-relaxed text-muted">// response will appear here after the request is sent.</pre>
           </div>
         </div>
       </div>
